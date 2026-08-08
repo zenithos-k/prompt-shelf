@@ -2,7 +2,7 @@
 
 A native macOS menu bar prompt manager built with Swift and SwiftUI. Prompt Shelf keeps reusable prompts one click away, supports drag-and-drop ordering, and turns `{{variables}}` into a fill-in form automatically.
 
-[Website](https://prompts.matrdreams.com) · [Download Prompt Shelf 1.3.0](https://prompts.matrdreams.com/downloads/Prompt-Shelf-1.3.0.dmg)
+[Website](https://prompts.matrdreams.com) · [Download Prompt Shelf 1.3.0](https://prompts.matrdreams.com/downloads/Prompt-Shelf-1.3.0.dmg?v=986abe6d)
 
 > Prompt Shelf is source-available and currently distributed as a free, non-notarized build. See [Distribution status](#distribution-status) before sharing it with other users.
 
