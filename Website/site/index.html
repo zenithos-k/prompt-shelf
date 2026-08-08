@@ -14,7 +14,7 @@
   <link rel="icon" type="image/png" href="/assets/app-icon.png">
   <link rel="apple-touch-icon" href="/assets/app-icon.png">
   <link rel="canonical" href="https://prompts.matrdreams.com/">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css?v=app-layout-140">
   <title>Prompt Shelf — Native Prompt Manager for macOS</title>
 </head>
 <body>
@@ -75,45 +75,59 @@
             <div class="window-highlight" aria-hidden="true"></div>
             <div class="app-toolbar">
               <div class="app-brandline">
-                <img src="/assets/app-icon.png" width="48" height="48" alt="">
+                <img src="/assets/app-icon.png" width="38" height="38" alt="">
                 <strong>Prompt Shelf</strong>
               </div>
-              <div class="toolbar-buttons" aria-hidden="true"><span>◐</span><span>⚙</span><span>＋</span></div>
+              <div class="toolbar-buttons" aria-hidden="true">
+                <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"></circle><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4"></path></svg></span>
+                <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"></path></svg></span>
+                <span><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></span>
+              </div>
             </div>
             <div class="fake-search"><span></span>Search titles or content</div>
             <div class="prompt-list">
-              <article class="prompt-card is-moving">
+              <article class="prompt-card">
                 <div class="drag-handle"><i></i><i></i><i></i></div>
                 <div class="prompt-text">
                   <div class="prompt-title">Review current changes</div>
-                  <p>Review the current git diff. Prioritize correctness, regressions and missing tests.</p>
+                  <p>Review the current git diff. Prioritize correctness, regressions, security, and missing tests.</p>
                 </div>
-                <div class="row-actions"><span>✎</span><span>⌫</span></div>
+                <div class="row-actions"><span><svg viewBox="0 0 24 24"><path d="m4 20 4.2-1 10.6-10.6-3.2-3.2L5 15.8 4 20ZM14.5 6.3l3.2 3.2"></path></svg></span><span class="delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 10v7M14 10v7"></path></svg></span></div>
               </article>
               <article class="prompt-card">
                 <div class="drag-handle"><i></i><i></i><i></i></div>
                 <div class="prompt-text">
-                  <div class="prompt-title">Explain this code <b>{ } 2</b></div>
-                  <p>Explain <mark>{{file}}</mark>, focusing on <mark>{{topic}}</mark> and the overall flow.</p>
+                  <div class="prompt-title">Create an implementation plan</div>
+                  <p>Read the relevant code first. List the goal, affected components, key decisions, validation steps, and risks.</p>
                 </div>
-                <div class="row-actions"><span>✎</span><span>⌫</span></div>
+                <div class="row-actions"><span><svg viewBox="0 0 24 24"><path d="m4 20 4.2-1 10.6-10.6-3.2-3.2L5 15.8 4 20ZM14.5 6.3l3.2 3.2"></path></svg></span><span class="delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 10v7M14 10v7"></path></svg></span></div>
+              </article>
+              <article class="prompt-card">
+                <div class="drag-handle"><i></i><i></i><i></i></div>
+                <div class="prompt-text">
+                  <div class="prompt-title">Explain this code <b><span>{}</span> 2</b></div>
+                  <p>Explain the implementation in <mark>{{file}}</mark>, focusing on <mark>{{topic}}</mark>. Start with the overall flow.</p>
+                </div>
+                <div class="row-actions"><span><svg viewBox="0 0 24 24"><path d="m4 20 4.2-1 10.6-10.6-3.2-3.2L5 15.8 4 20ZM14.5 6.3l3.2 3.2"></path></svg></span><span class="delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 10v7M14 10v7"></path></svg></span></div>
+              </article>
+              <article class="prompt-card">
+                <div class="drag-handle"><i></i><i></i><i></i></div>
+                <div class="prompt-text">
+                  <div class="prompt-title">Fix and verify <b><span>{}</span> 1</b></div>
+                  <p>Find the root cause, implement the smallest safe fix, then run <mark>{{test_command}}</mark>. Avoid unrelated changes.</p>
+                </div>
+                <div class="row-actions"><span><svg viewBox="0 0 24 24"><path d="m4 20 4.2-1 10.6-10.6-3.2-3.2L5 15.8 4 20ZM14.5 6.3l3.2 3.2"></path></svg></span><span class="delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 10v7M14 10v7"></path></svg></span></div>
               </article>
               <article class="prompt-card">
                 <div class="drag-handle"><i></i><i></i><i></i></div>
                 <div class="prompt-text">
                   <div class="prompt-title">Draft a commit message</div>
-                  <p>Write a concise commit message from the current diff with a result-oriented subject.</p>
+                  <p>Write a concise commit message from the current diff. Use a result-oriented subject, then bullets for important changes.</p>
                 </div>
-                <div class="row-actions"><span>✎</span><span>⌫</span></div>
+                <div class="row-actions"><span><svg viewBox="0 0 24 24"><path d="m4 20 4.2-1 10.6-10.6-3.2-3.2L5 15.8 4 20ZM14.5 6.3l3.2 3.2"></path></svg></span><span class="delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 10v7M14 10v7"></path></svg></span></div>
               </article>
             </div>
-            <div class="app-footer"><span>☰　Drag cards to reorder</span><span>Click a prompt to copy</span></div>
-          </div>
-          <div class="variable-popover" aria-hidden="true">
-            <div class="popover-head"><span>{ }</span><strong>Fill 2 variables</strong><i>×</i></div>
-            <label>file</label><div class="fake-field">LibraryView.swift</div>
-            <label>topic</label><div class="fake-field active">drag &amp; drop</div>
-            <div class="popover-action">Copy Complete Prompt</div>
+            <div class="app-footer"><span><i></i>Drag a handle to reorder</span><span>Click a prompt to copy</span></div>
           </div>
         </div>
       </div>
