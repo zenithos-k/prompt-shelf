@@ -1,0 +1,15 @@
+.DS_Store
+.build/
+.build-local/
+.build-universal/
+.cache/
+.swiftpm/
+dist/
+QA/
+Website/.wrangler/
+Website/site/downloads/*.dmg
+!Website/site/downloads/.gitkeep
+node_modules/
+.dev.vars*
+*.xcuserstate
+xcuserdata/

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
+  "name": "prompt-shelf-site",
+  "compatibility_date": "2026-08-08",
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "directory": "./site",
+    "not_found_handling": "single-page-application"
+  },
+  "routes": [
+    {
+      "pattern": "prompts.matrdreams.com",
+      "custom_domain": true
+    }
+  ]
+}
