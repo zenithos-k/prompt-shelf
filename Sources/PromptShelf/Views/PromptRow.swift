@@ -2,6 +2,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct PromptRow: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     let prompt: PromptSnippet
     @ObservedObject var store: PromptStore
     let onCopy: () -> Void
@@ -103,7 +105,8 @@ struct PromptRow: View {
         .frame(minHeight: rowHeight)
         .shelfCard(
             cornerRadius: 14,
-            tint: ShelfColors.indigo,
+            tint: colorScheme == .light ? ShelfColors.promptGold : ShelfColors.indigo,
+            tintOpacity: colorScheme == .light ? 0.115 : nil,
             elevated: isHovering
         )
         .overlay(alignment: .leading) {

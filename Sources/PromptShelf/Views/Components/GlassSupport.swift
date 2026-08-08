@@ -5,6 +5,7 @@ enum ShelfColors {
     static let azure = Color(red: 0.08, green: 0.48, blue: 1.0)
     static let indigo = Color(red: 0.31, green: 0.34, blue: 0.98)
     static let violet = Color(red: 0.62, green: 0.34, blue: 1.0)
+    static let promptGold = Color(red: 0.92, green: 0.69, blue: 0.22)
 }
 
 extension View {
@@ -53,6 +54,7 @@ struct ShelfCardModifier: ViewModifier {
 
     var cornerRadius: CGFloat = 12
     var tint: Color = ShelfColors.indigo
+    var tintOpacity: Double?
     var elevated = false
 
     func body(content: Content) -> some View {
@@ -63,12 +65,15 @@ struct ShelfCardModifier: ViewModifier {
         let bottomShade = colorScheme == .dark
             ? Color.black.opacity(0.08)
             : Color.black.opacity(0.018)
+        let resolvedTintOpacity = tintOpacity.map { opacity in
+            min(1, opacity + (elevated ? 0.035 : 0))
+        } ?? (elevated ? 0.105 : 0.052)
 
         content
             .background(.thinMaterial, in: shape)
             .background(
                 LinearGradient(
-                    colors: [topHighlight, tint.opacity(elevated ? 0.105 : 0.052), bottomShade],
+                    colors: [topHighlight, tint.opacity(resolvedTintOpacity), bottomShade],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 ),
@@ -102,8 +107,16 @@ extension View {
     func shelfCard(
         cornerRadius: CGFloat = 12,
         tint: Color = ShelfColors.indigo,
+        tintOpacity: Double? = nil,
         elevated: Bool = false
     ) -> some View {
-        modifier(ShelfCardModifier(cornerRadius: cornerRadius, tint: tint, elevated: elevated))
+        modifier(
+            ShelfCardModifier(
+                cornerRadius: cornerRadius,
+                tint: tint,
+                tintOpacity: tintOpacity,
+                elevated: elevated
+            )
+        )
     }
 }

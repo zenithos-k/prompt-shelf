@@ -243,8 +243,8 @@ button, input { font: inherit; }
 .fake-search span { position: absolute; left: 18px; top: 16px; width: 16px; height: 16px; border: 2px solid #8e9299; border-radius: 50%; }
 .fake-search span::after { content: ""; position: absolute; width: 7px; height: 2px; right: -5px; bottom: -2px; background: #8e9299; transform: rotate(45deg); border-radius: 2px; }
 .prompt-list { position: relative; padding: 20px 20px 55px; display: grid; gap: 11px; }
-.prompt-card { display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: center; min-height: 102px; padding: 16px; border: 1px solid rgba(37,67,108,.09); border-radius: 20px; color: #26272b; background: rgba(255,255,255,.79); box-shadow: 0 10px 20px rgba(45,68,101,.07); }
-.prompt-card.is-moving { border-color: rgba(35,144,255,.48); background: rgba(242,248,255,.96); box-shadow: 0 15px 30px rgba(38,83,138,.14), 0 0 0 2px rgba(22,135,255,.11); transform: translate(8px, -2px) rotate(-.6deg); }
+.prompt-card { display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: center; min-height: 102px; padding: 16px; border: 1px solid rgba(156,119,35,.14); border-radius: 20px; color: #26272b; background: rgba(255,247,216,.88); box-shadow: 0 10px 20px rgba(91,70,28,.08); }
+.prompt-card.is-moving { border-color: rgba(35,144,255,.48); background: rgba(255,244,202,.97); box-shadow: 0 15px 30px rgba(38,83,138,.14), 0 0 0 2px rgba(22,135,255,.11); transform: translate(8px, -2px) rotate(-.6deg); }
 .drag-handle { display: grid; gap: 4px; opacity: .5; }
 .drag-handle i { display: block; width: 20px; height: 2px; border-radius: 2px; background: #9ca4ae; }
 .prompt-title { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 760; }
