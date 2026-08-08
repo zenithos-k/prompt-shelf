@@ -1,12 +1,19 @@
 {
   "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
   "name": "prompt-shelf-site",
+  "main": "./src/index.js",
   "compatibility_date": "2026-08-08",
+  "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
   "preview_urls": true,
   "assets": {
     "directory": "./site",
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    "run_worker_first": ["/"]
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.01
   },
   "routes": [
     {
