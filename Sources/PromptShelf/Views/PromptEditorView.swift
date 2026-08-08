@@ -4,11 +4,9 @@ struct PromptEditorView: View {
     let prompt: PromptSnippet?
     let onCancel: () -> Void
     let onSave: (_ title: String, _ body: String) -> Void
-    let onDelete: (() -> Void)?
 
     @State private var title: String
     @State private var bodyText: String
-    @State private var showsDeleteConfirmation = false
     @FocusState private var focusedField: Field?
 
     private enum Field {
@@ -19,13 +17,11 @@ struct PromptEditorView: View {
     init(
         prompt: PromptSnippet?,
         onCancel: @escaping () -> Void,
-        onSave: @escaping (_ title: String, _ body: String) -> Void,
-        onDelete: (() -> Void)? = nil
+        onSave: @escaping (_ title: String, _ body: String) -> Void
     ) {
         self.prompt = prompt
         self.onCancel = onCancel
         self.onSave = onSave
-        self.onDelete = onDelete
         _title = State(initialValue: prompt?.title ?? "")
         _bodyText = State(initialValue: prompt?.body ?? "")
     }
@@ -59,12 +55,6 @@ struct PromptEditorView: View {
         .onAppear {
             DispatchQueue.main.async {
                 focusedField = prompt == nil ? .title : .body
-            }
-        }
-        .alert(prompt?.title ?? title, isPresented: $showsDeleteConfirmation) {
-            Button("Cancel", role: .cancel) {}
-            Button("Delete", role: .destructive) {
-                onDelete?()
             }
         }
     }
@@ -148,12 +138,6 @@ struct PromptEditorView: View {
 
     private var actionBar: some View {
         HStack {
-            if onDelete != nil {
-                Button("Delete", role: .destructive) {
-                    showsDeleteConfirmation = true
-                }
-            }
-
             Spacer()
 
             Button("Cancel", action: onCancel)

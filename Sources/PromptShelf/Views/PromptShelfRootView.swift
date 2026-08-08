@@ -101,13 +101,6 @@ struct PromptShelfRootView: View {
                     }
                     route = .library
                     showToast("Saved")
-                },
-                onDelete: promptID.map { id in
-                    {
-                        store.delete(id: id)
-                        route = .library
-                        showToast("Deleted")
-                    }
                 }
             )
             .id(promptID)

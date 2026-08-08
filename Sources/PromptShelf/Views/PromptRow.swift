@@ -11,8 +11,6 @@ struct PromptRow: View {
     let onDelete: () -> Void
 
     @State private var isHovering = false
-    @State private var showsDeleteConfirmation = false
-    @State private var dragOriginIndex: Int?
     @State private var dragTranslation: CGFloat = 0
 
     private let rowHeight: CGFloat = 80
@@ -28,6 +26,30 @@ struct PromptRow: View {
 
     private var isDragging: Bool {
         store.draggedPromptID == prompt.id
+    }
+
+    private var rowStride: CGFloat {
+        rowHeight + rowSpacing
+    }
+
+    private var displayOffset: CGFloat {
+        if isDragging {
+            return dragTranslation
+        }
+
+        guard let origin = store.dragOriginIndex,
+              let target = store.dragTargetIndex,
+              let current = store.index(of: prompt.id) else {
+            return 0
+        }
+
+        if origin < target, current > origin, current <= target {
+            return -rowStride
+        }
+        if target < origin, current >= target, current < origin {
+            return rowStride
+        }
+        return 0
     }
 
     var body: some View {
@@ -47,7 +69,10 @@ struct PromptRow: View {
                     in: RoundedRectangle(cornerRadius: 7, style: .continuous)
                 )
                 .contentShape(Rectangle())
-                .gesture(reorderGesture, including: isReorderingEnabled ? .all : .none)
+                .highPriorityGesture(
+                    reorderGesture,
+                    including: isReorderingEnabled ? .all : .none
+                )
                 .help(isReorderingEnabled ? "Drag to reorder" : "Clear search to reorder")
 
             Button(action: onCopy) {
@@ -98,9 +123,7 @@ struct PromptRow: View {
                 .buttonStyle(.plain)
                 .help("Edit")
 
-                Button(role: .destructive) {
-                    showsDeleteConfirmation = true
-                } label: {
+                Button(role: .destructive, action: onDelete) {
                     Image(systemName: "trash")
                         .foregroundStyle(Color.red.opacity(isHovering ? 0.88 : 0.68))
                         .frame(width: 28, height: 28)
@@ -136,7 +159,7 @@ struct PromptRow: View {
                 .opacity(isHovering ? 1 : 0.34)
         }
         .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .offset(y: isDragging ? dragTranslation : 0)
+        .offset(y: displayOffset)
         .scaleEffect(isDragging ? 1.018 : (isHovering ? 1.004 : 1))
         .opacity(isDragging ? 0.88 : 1)
         .shadow(
@@ -145,44 +168,41 @@ struct PromptRow: View {
             y: isDragging ? 6 : 0
         )
         .zIndex(isDragging ? 2 : 0)
+        .animation(
+            isDragging ? nil : .interactiveSpring(response: 0.2, dampingFraction: 0.9),
+            value: store.dragTargetIndex
+        )
         .onHover { hovering in
+            guard !isDragging else { return }
             withAnimation(.easeOut(duration: 0.16)) {
                 isHovering = hovering
             }
         }
-        .animation(.easeOut(duration: 0.12), value: isDragging)
-        .alert(prompt.title, isPresented: $showsDeleteConfirmation) {
-            Button("Cancel", role: .cancel) {}
-            Button("Delete", role: .destructive, action: onDelete)
-        }
     }
 
     private var reorderGesture: some Gesture {
-        DragGesture(minimumDistance: 3)
+        DragGesture(minimumDistance: 2, coordinateSpace: .global)
             .onChanged { value in
                 guard isReorderingEnabled else { return }
 
-                if dragOriginIndex == nil {
-                    guard let index = store.index(of: prompt.id) else { return }
-                    dragOriginIndex = index
+                if !isDragging {
                     store.beginDragging(id: prompt.id)
                 }
                 dragTranslation = value.translation.height
+
+                guard let dragOriginIndex = store.dragOriginIndex else { return }
+                let indexOffset = Int((dragTranslation / rowStride).rounded())
+                store.updateDragTarget(to: dragOriginIndex + indexOffset)
             }
-            .onEnded { value in
-                guard let dragOriginIndex else {
+            .onEnded { _ in
+                guard isDragging else {
                     store.finishDragging()
                     return
                 }
 
-                let stride = rowHeight + rowSpacing
-                let indexOffset = Int((value.translation.height / stride).rounded())
-
-                withAnimation(.interactiveSpring(response: 0.24, dampingFraction: 0.86)) {
-                    store.movePrompt(id: prompt.id, to: dragOriginIndex + indexOffset)
+                withAnimation(.interactiveSpring(response: 0.22, dampingFraction: 0.9)) {
                     dragTranslation = 0
-                    self.dragOriginIndex = nil
-                    store.finishDragging()
+                    store.commitDragging()
                 }
             }
     }

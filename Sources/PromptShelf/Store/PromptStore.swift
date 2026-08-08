@@ -4,6 +4,8 @@ import Foundation
 final class PromptStore: ObservableObject {
     @Published private(set) var prompts: [PromptSnippet]
     @Published private(set) var draggedPromptID: UUID?
+    @Published private(set) var dragOriginIndex: Int?
+    @Published private(set) var dragTargetIndex: Int?
     @Published var lastError: String?
 
     private let repository: PromptRepository
@@ -71,13 +73,33 @@ final class PromptStore: ObservableObject {
     func delete(id: UUID) {
         prompts.removeAll { $0.id == id }
         if draggedPromptID == id {
-            draggedPromptID = nil
+            finishDragging()
         }
         scheduleSave()
     }
 
     func beginDragging(id: UUID) {
+        guard let index = index(of: id) else { return }
         draggedPromptID = id
+        dragOriginIndex = index
+        dragTargetIndex = index
+    }
+
+    func updateDragTarget(to proposedIndex: Int) {
+        guard draggedPromptID != nil, !prompts.isEmpty else { return }
+        let target = min(max(proposedIndex, prompts.startIndex), prompts.index(before: prompts.endIndex))
+        guard dragTargetIndex != target else { return }
+        dragTargetIndex = target
+    }
+
+    func commitDragging() {
+        guard let draggedPromptID, let dragTargetIndex else {
+            finishDragging()
+            return
+        }
+
+        movePrompt(id: draggedPromptID, to: dragTargetIndex)
+        finishDragging()
     }
 
     func index(of id: UUID) -> Int? {
@@ -118,6 +140,8 @@ final class PromptStore: ObservableObject {
     func finishDragging() {
         guard draggedPromptID != nil else { return }
         draggedPromptID = nil
+        dragOriginIndex = nil
+        dragTargetIndex = nil
     }
 
     func export(to url: URL) throws {

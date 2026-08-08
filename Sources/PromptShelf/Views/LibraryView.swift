@@ -12,6 +12,7 @@ struct LibraryView: View {
     let onSelect: (PromptSnippet) -> Void
 
     @State private var searchText = ""
+    @State private var pendingDeletion: PromptSnippet?
     @FocusState private var searchIsFocused: Bool
 
     private var normalizedQuery: String {
@@ -23,27 +24,37 @@ struct LibraryView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            header
+        ZStack {
+            VStack(spacing: 0) {
+                header
 
-            Rectangle()
-                .fill(
-                    LinearGradient(
-                        colors: [.clear, ShelfColors.azure.opacity(0.24), .clear],
-                        startPoint: .leading,
-                        endPoint: .trailing
+                Rectangle()
+                    .fill(
+                        LinearGradient(
+                            colors: [.clear, ShelfColors.azure.opacity(0.24), .clear],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
                     )
-                )
-                .frame(height: 1)
+                    .frame(height: 1)
 
-            if visiblePrompts.isEmpty {
-                emptyState
-            } else {
-                promptList
+                if visiblePrompts.isEmpty {
+                    emptyState
+                } else {
+                    promptList
+                }
+
+                footer
             }
+            .allowsHitTesting(pendingDeletion == nil)
 
-            footer
+            if let pendingDeletion {
+                deleteConfirmation(for: pendingDeletion)
+                    .transition(.opacity.combined(with: .scale(scale: 0.98)))
+                    .zIndex(20)
+            }
         }
+        .animation(.easeOut(duration: 0.15), value: pendingDeletion?.id)
     }
 
     private var header: some View {
@@ -137,6 +148,7 @@ struct LibraryView: View {
             .padding(.horizontal, 13)
             .padding(.vertical, 12)
         }
+        .scrollDisabled(store.draggedPromptID != nil)
         .animation(
             store.draggedPromptID == nil ? .easeInOut(duration: 0.18) : nil,
             value: store.prompts.map(\.id)
@@ -150,8 +162,57 @@ struct LibraryView: View {
             isReorderingEnabled: normalizedQuery.isEmpty,
             onCopy: { onSelect(prompt) },
             onEdit: { onEdit(prompt.id) },
-            onDelete: { onDelete(prompt.id) }
+            onDelete: { pendingDeletion = prompt }
         )
+    }
+
+    private func deleteConfirmation(for prompt: PromptSnippet) -> some View {
+        ZStack {
+            Color.black
+                .opacity(colorScheme == .dark ? 0.34 : 0.16)
+                .ignoresSafeArea()
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    pendingDeletion = nil
+                }
+
+            VStack(spacing: 16) {
+                Image(systemName: "trash")
+                    .font(.system(size: 21, weight: .medium))
+                    .foregroundStyle(.red)
+                    .frame(width: 44, height: 44)
+                    .background(Color.red.opacity(0.1), in: Circle())
+
+                Text("Are you sure you want to delete “\(prompt.title)”?")
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                HStack(spacing: 10) {
+                    Button("Cancel") {
+                        pendingDeletion = nil
+                    }
+                    .keyboardShortcut(.cancelAction)
+
+                    Button("Delete", role: .destructive) {
+                        pendingDeletion = nil
+                        onDelete(prompt.id)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.red)
+                    .keyboardShortcut(.defaultAction)
+                }
+                .controlSize(.large)
+            }
+            .padding(20)
+            .frame(width: 310)
+            .shelfCard(
+                cornerRadius: 18,
+                tint: .red,
+                tintOpacity: 0.035,
+                elevated: true
+            )
+        }
     }
 
     private var emptyState: some View {
