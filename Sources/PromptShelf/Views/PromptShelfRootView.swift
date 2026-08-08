@@ -210,9 +210,9 @@ struct PromptShelfRootView: View {
             return
         }
 
-        showToast("Copied to Clipboard")
         if closeAfterCopy {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+            route = .library
+            DispatchQueue.main.async {
                 MenuBarWindowController.dismiss()
             }
         }
