@@ -74,7 +74,7 @@ struct VariableFillView: View {
             Spacer()
         }
         .padding(14)
-        .background(.ultraThinMaterial)
+        .background { ShelfChromeBackground() }
     }
 
     private var fieldsSection: some View {
@@ -138,7 +138,7 @@ struct VariableFillView: View {
         }
         .padding(.horizontal, 14)
         .frame(height: 52)
-        .background(.ultraThinMaterial)
+        .background { ShelfChromeBackground() }
     }
 
     private func binding(for variable: String) -> Binding<String> {

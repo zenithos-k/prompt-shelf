@@ -29,6 +29,10 @@ trap cleanup EXIT
 
 "$SCRIPT_DIR/build-universal-app.sh" >/dev/null
 
+/usr/bin/xattr -cr "$APP_DIR"
+/usr/bin/xattr -d com.apple.FinderInfo "$APP_DIR" 2>/dev/null || true
+/usr/bin/xattr -d 'com.apple.fileprovider.fpfs#P' "$APP_DIR" 2>/dev/null || true
+
 if [[ "$SIGN_IDENTITY" == "-" ]]; then
     /usr/bin/codesign --force --deep --sign - --timestamp=none "$APP_DIR"
     echo "Warning: no Developer ID identity configured; using an ad-hoc signature." >&2

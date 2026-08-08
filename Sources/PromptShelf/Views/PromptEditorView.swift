@@ -89,7 +89,7 @@ struct PromptEditorView: View {
             Spacer()
         }
         .padding(14)
-        .background(.ultraThinMaterial)
+        .background { ShelfChromeBackground() }
     }
 
     private var titleSection: some View {
@@ -166,7 +166,7 @@ struct PromptEditorView: View {
         }
         .padding(.horizontal, 14)
         .frame(height: 52)
-        .background(.ultraThinMaterial)
+        .background { ShelfChromeBackground() }
     }
 
     private func fieldLabel(_ value: String) -> some View {

@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @ObservedObject var store: PromptStore
+    @Environment(\.colorScheme) private var colorScheme
     let onDone: () -> Void
 
     @AppStorage(PreferenceKey.appearanceMode)
@@ -55,7 +56,7 @@ struct SettingsView: View {
             }
             .padding(.horizontal, 14)
             .frame(height: 52)
-            .background(.ultraThinMaterial)
+            .background { ShelfChromeBackground() }
         }
         .onAppear { launchAtLogin.refresh() }
         .alert("Unable to Complete the Operation", isPresented: errorBinding) {
@@ -101,7 +102,7 @@ struct SettingsView: View {
             Spacer()
         }
         .padding(14)
-        .background(.ultraThinMaterial)
+        .background { ShelfChromeBackground() }
     }
 
     private var appearanceSection: some View {
@@ -117,8 +118,9 @@ struct SettingsView: View {
                 }
             }
             .pickerStyle(.segmented)
+            .labelsHidden()
 
-            Text("System follows your current macOS light or dark appearance.")
+            Label("System follows your current macOS appearance automatically.", systemImage: "sparkles")
                 .font(.system(size: 10.5))
                 .foregroundStyle(.secondary)
         }
@@ -126,11 +128,15 @@ struct SettingsView: View {
 
     private var behaviorSection: some View {
         settingsCard(title: "Behavior", systemImage: "switch.2", tint: ShelfColors.azure) {
-            Toggle("Launch at Login", isOn: Binding(
-                get: { launchAtLogin.isEnabled },
-                set: { launchAtLogin.setEnabled($0) }
-            ))
-            .toggleStyle(.switch)
+            settingToggleRow(
+                title: "Launch at Login",
+                description: "Keep Prompt Shelf ready after you sign in.",
+                systemImage: "power",
+                isOn: Binding(
+                    get: { launchAtLogin.isEnabled },
+                    set: { launchAtLogin.setEnabled($0) }
+                )
+            )
 
             if launchAtLogin.needsApproval {
                 Text("Approval is required in System Settings → General → Login Items.")
@@ -140,8 +146,12 @@ struct SettingsView: View {
 
             Divider()
 
-            Toggle("Close Window After Copying", isOn: $closeAfterCopy)
-                .toggleStyle(.switch)
+            settingToggleRow(
+                title: "Close After Copying",
+                description: "Return to your work as soon as copying succeeds.",
+                systemImage: "rectangle.portrait.and.arrow.right",
+                isOn: $closeAfterCopy
+            )
         }
     }
 
@@ -150,7 +160,7 @@ struct SettingsView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Local JSON")
-                        .font(.system(size: 12, weight: .medium))
+                        .font(.system(size: 12, weight: .semibold))
                     Text(store.databaseURL.path)
                         .font(.system(size: 9.5, design: .monospaced))
                         .foregroundStyle(.tertiary)
@@ -161,13 +171,16 @@ struct SettingsView: View {
                     store.flush()
                     NSWorkspace.shared.activateFileViewerSelecting([store.databaseURL])
                 }
+                .buttonStyle(.bordered)
             }
 
             Divider()
 
             HStack {
                 Button("Import…", action: chooseImportFile)
+                    .buttonStyle(.bordered)
                 Button("Export…", action: exportDocument)
+                    .buttonStyle(.bordered)
                 Spacer()
                 Label("Stored only on this Mac", systemImage: "lock")
                     .font(.system(size: 10.5))
@@ -178,15 +191,21 @@ struct SettingsView: View {
 
     private var aboutSection: some View {
         settingsCard(title: "About", systemImage: "info.circle", tint: ShelfColors.indigo) {
-            HStack {
-                Text("Prompt Shelf")
+            HStack(spacing: 10) {
+                AppMarkView(size: 32)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("Prompt Shelf")
+                        .font(.system(size: 12.5, weight: .semibold))
+                    Text("Fast prompts, right in the menu bar")
+                        .font(.system(size: 10))
+                        .foregroundStyle(.secondary)
+                }
                 Spacer()
                 Text("Version \(appVersion)")
                     .foregroundStyle(.secondary)
             }
-            .font(.system(size: 11.5))
 
-            Text("A native macOS menu bar prompt manager with automatic variable detection, drag-and-drop ordering, and local backups.")
+            Text("Native SwiftUI, automatic {{variable}} detection, gesture-based ordering, and readable local backups.")
                 .font(.system(size: 10.5))
                 .foregroundStyle(.secondary)
         }
@@ -199,14 +218,51 @@ struct SettingsView: View {
         @ViewBuilder content: () -> Content
     ) -> some View {
         VStack(alignment: .leading, spacing: 11) {
-            Label(title, systemImage: systemImage)
-                .font(.system(size: 11.5, weight: .semibold))
-                .foregroundStyle(.secondary)
+            HStack(spacing: 8) {
+                Image(systemName: systemImage)
+                    .font(.system(size: 10.5, weight: .semibold))
+                    .foregroundStyle(colorScheme == .light ? tint : Color.white)
+                    .frame(width: 25, height: 25)
+                    .background(tint.opacity(colorScheme == .light ? 0.11 : 0.28), in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+
+                Text(title)
+                    .font(.system(size: 11.5, weight: .semibold))
+                    .foregroundStyle(.primary)
+            }
             content()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(13)
-        .shelfCard(cornerRadius: 12, tint: tint)
+        .shelfCard(cornerRadius: 14, tint: tint, tintOpacity: colorScheme == .light ? 0.035 : nil)
+    }
+
+    private func settingToggleRow(
+        title: String,
+        description: String,
+        systemImage: String,
+        isOn: Binding<Bool>
+    ) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: systemImage)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(ShelfColors.azure)
+                .frame(width: 24)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.system(size: 11.5, weight: .medium))
+                Text(description)
+                    .font(.system(size: 9.75))
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer(minLength: 8)
+
+            Toggle("", isOn: isOn)
+                .labelsHidden()
+                .toggleStyle(.switch)
+                .controlSize(.small)
+        }
     }
 
     private var errorBinding: Binding<Bool> {

@@ -53,10 +53,10 @@ enum AppAppearanceController {
             appearance = NSAppearance(named: .darkAqua)
         }
 
-        NSApp.appearance = appearance
-        for window in NSApp.windows {
-            window.appearance = appearance
-            window.contentView?.needsDisplay = true
-        }
+        // Apply the preference only to the open shelf window. Setting
+        // `NSApp.appearance` also recolors the NSStatusItem in the menu bar,
+        // making the icon change when users toggle the shelf appearance.
+        NSApp.keyWindow?.appearance = appearance
+        NSApp.keyWindow?.contentView?.needsDisplay = true
     }
 }

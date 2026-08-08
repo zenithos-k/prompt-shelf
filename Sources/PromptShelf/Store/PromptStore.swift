@@ -80,6 +80,24 @@ final class PromptStore: ObservableObject {
         draggedPromptID = id
     }
 
+    func index(of id: UUID) -> Int? {
+        prompts.firstIndex { $0.id == id }
+    }
+
+    func movePrompt(id: UUID, to proposedIndex: Int) {
+        guard prompts.count > 1,
+              let sourceIndex = prompts.firstIndex(where: { $0.id == id }) else {
+            return
+        }
+
+        let destinationIndex = min(max(proposedIndex, prompts.startIndex), prompts.index(before: prompts.endIndex))
+        guard sourceIndex != destinationIndex else { return }
+
+        let snippet = prompts.remove(at: sourceIndex)
+        prompts.insert(snippet, at: min(destinationIndex, prompts.endIndex))
+        scheduleSave()
+    }
+
     func moveDraggedPrompt(to targetID: UUID, afterTarget: Bool) {
         guard let draggedPromptID,
               draggedPromptID != targetID,

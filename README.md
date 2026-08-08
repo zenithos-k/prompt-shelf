@@ -2,7 +2,7 @@
 
 A native macOS menu bar prompt manager built with Swift and SwiftUI. Prompt Shelf keeps reusable prompts one click away, supports drag-and-drop ordering, and turns `{{variables}}` into a fill-in form automatically.
 
-[Website](https://prompts.matrdreams.com) · [Download Prompt Shelf 1.3.1](https://prompts.matrdreams.com/downloads/Prompt-Shelf-1.3.1.dmg?v=ddb08b79)
+[Website](https://prompts.matrdreams.com) · [Download Prompt Shelf 1.4.0](https://prompts.matrdreams.com/downloads/Prompt-Shelf-1.4.0.dmg?v=a64e43c2)
 
 > Prompt Shelf is source-available and currently distributed as a free, non-notarized build. See [Distribution status](#distribution-status) before sharing it with other users.
 
@@ -13,16 +13,15 @@ Prompt libraries are often buried in notes, text expanders, or previous chat ses
 Core advantages:
 
 - **Native interaction:** `MenuBarExtra`, SwiftUI controls, system materials, keyboard shortcuts, and macOS appearance support.
-- **Deterministic ordering:** drag any card or its handle; array order is persisted and restored exactly.
+- **Deterministic ordering:** drag a row handle to place a prompt; array order is persisted and restored exactly.
 - **Zero-configuration templates:** any unique token matching `{{variable_name}}` becomes a field before copy.
 - **Local-first data:** prompts are stored in a readable, versioned JSON document on the current Mac.
 - **Small runtime surface:** no Electron, embedded web view, third-party SDK, analytics, or network request.
-- **Universal distribution:** one application binary supports both Apple Silicon and Intel Macs.
 
 ## Features
 
 - Create, edit, search, copy, and delete prompts
-- Drag-and-drop ordering across the complete prompt list
+- Gesture-based ordering across the complete prompt list
 - Automatic `{{variable}}` detection, live rendering, and validation
 - System, light, and dark appearance modes
 - Optional close-after-copy behavior
@@ -51,7 +50,6 @@ Sources/PromptShelf/
 ├── Views/
 │   ├── LibraryView.swift
 │   ├── PromptRow.swift
-│   ├── PromptDropDelegate.swift
 │   ├── PromptEditorView.swift
 │   ├── VariableFillView.swift
 │   └── SettingsView.swift
@@ -90,7 +88,6 @@ Prompt Shelf does not transmit this file or its contents. Import and export are 
 ### Run
 
 - macOS 13.0 or later
-- Apple Silicon or Intel Mac
 
 ### Build
 
@@ -124,13 +121,6 @@ Build a standard application bundle:
 open "dist/Prompt Shelf.app"
 ```
 
-Build the Universal application bundle:
-
-```bash
-./Scripts/build-universal-app.sh
-lipo -info "dist/Prompt Shelf.app/Contents/MacOS/PromptShelf"
-```
-
 Create the styled release DMG:
 
 ```bash
@@ -143,7 +133,6 @@ Create the styled release DMG:
 - Variable extraction reuses a single compiled regular expression.
 - Persistence runs away from the main actor on a serial utility queue.
 - Consecutive reorder writes are coalesced; the final state is flushed explicitly.
-- The application binary contains native `arm64` and `x86_64` slices.
 - The application has no runtime package dependencies or network client.
 
 ## Privacy and security
@@ -154,8 +143,8 @@ Before publishing a release, verify at minimum:
 
 ```bash
 codesign --verify --deep --strict --verbose=2 "dist/Prompt Shelf.app"
-hdiutil verify "Website/site/downloads/Prompt-Shelf-1.3.1.dmg"
-shasum -a 256 "Website/site/downloads/Prompt-Shelf-1.3.1.dmg"
+hdiutil verify "Website/site/downloads/Prompt-Shelf-1.4.0.dmg"
+shasum -a 256 "Website/site/downloads/Prompt-Shelf-1.4.0.dmg"
 ```
 
 ## Distribution status

@@ -49,6 +49,27 @@ struct PromptStoreTests {
         #expect(try repository.load()?.prompts.map(\.title) == ["Second", "First", "Third"])
     }
 
+    @Test("Gesture reordering moves directly to a clamped index")
+    @MainActor
+    func gestureReorderMovesToClampedIndex() throws {
+        let temporaryDirectory = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: temporaryDirectory) }
+
+        let repository = PromptRepository(directoryURL: temporaryDirectory)
+        let first = PromptSnippet(title: "First", body: "1")
+        let second = PromptSnippet(title: "Second", body: "2")
+        let third = PromptSnippet(title: "Third", body: "3")
+        let store = PromptStore(repository: repository, seedPrompts: [first, second, third])
+
+        store.beginDragging(id: first.id)
+        store.movePrompt(id: first.id, to: 20)
+        store.finishDragging()
+        store.flush()
+
+        #expect(store.prompts.map(\.title) == ["Second", "Third", "First"])
+        #expect(try repository.load()?.prompts.map(\.title) == ["Second", "Third", "First"])
+    }
+
     @Test("Editing content preserves the manually chosen order")
     @MainActor
     func editingContentPreservesOrder() {

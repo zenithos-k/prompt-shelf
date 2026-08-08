@@ -54,14 +54,7 @@ struct LibraryView: View {
                 .padding(.horizontal, 14)
                 .padding(.bottom, 12)
         }
-        .background(.ultraThinMaterial)
-        .background(
-            LinearGradient(
-                colors: [ShelfColors.azure.opacity(0.075), .clear],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
+        .background { ShelfChromeBackground() }
     }
 
     private var toolbar: some View {
@@ -106,7 +99,7 @@ struct LibraryView: View {
     private var searchField: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(colorScheme == .light ? ShelfColors.azure.opacity(0.72) : Color.secondary)
 
             TextField("Search titles or content", text: $searchText)
                 .textFieldStyle(.plain)
@@ -154,6 +147,7 @@ struct LibraryView: View {
         PromptRow(
             prompt: prompt,
             store: store,
+            isReorderingEnabled: normalizedQuery.isEmpty,
             onCopy: { onSelect(prompt) },
             onEdit: { onEdit(prompt.id) },
             onDelete: { onDelete(prompt.id) }
@@ -179,7 +173,7 @@ struct LibraryView: View {
     private var footer: some View {
         HStack(spacing: 6) {
             Image(systemName: "line.3.horizontal")
-            Text("Drag cards to reorder")
+            Text(normalizedQuery.isEmpty ? "Drag a handle to reorder" : "Clear search to reorder")
             Spacer()
             Text("Click a prompt to copy")
         }
@@ -187,10 +181,14 @@ struct LibraryView: View {
         .foregroundStyle(.tertiary)
         .padding(.horizontal, 14)
         .frame(height: 36)
-        .background(.ultraThinMaterial)
+        .background { ShelfChromeBackground() }
         .overlay(alignment: .top) {
             Rectangle()
-                .fill(Color(nsColor: .separatorColor).opacity(0.35))
+                .fill(
+                    colorScheme == .light
+                        ? ShelfColors.warmLine.opacity(0.42)
+                        : Color(nsColor: .separatorColor).opacity(0.35)
+                )
                 .frame(height: 0.5)
         }
     }

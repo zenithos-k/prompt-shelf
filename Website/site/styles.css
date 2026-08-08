@@ -228,22 +228,23 @@ button, input { font: inherit; }
   width: min(540px, 92%);
   height: 555px;
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,.92);
+  border: 1px solid rgba(255,255,255,.96);
   border-radius: 32px;
-  background: linear-gradient(155deg, rgba(252,253,255,.97), rgba(236,241,249,.98));
-  box-shadow: var(--shadow-lg), inset 0 0 0 1px rgba(35,77,130,.05);
+  background: linear-gradient(155deg, rgba(250,248,241,.98), rgba(238,234,223,.99));
+  box-shadow: var(--shadow-lg), inset 0 0 0 1px rgba(96,80,47,.055);
   transform: rotateY(-4deg) rotateX(1deg);
 }
-.window-highlight { position: absolute; inset: 0; background: radial-gradient(circle at 25% 5%, rgba(56,150,255,.12), transparent 35%), radial-gradient(circle at 95% 100%, rgba(149,66,183,.07), transparent 40%); pointer-events: none; }
-.app-toolbar { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 24px 25px 18px; }
+.window-highlight { position: absolute; inset: 0; background: radial-gradient(circle at 20% 5%, rgba(22,135,255,.08), transparent 36%), radial-gradient(circle at 95% 100%, rgba(115,87,255,.045), transparent 42%); pointer-events: none; }
+.app-toolbar { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 24px 25px 18px; border-bottom: 1px solid rgba(114,95,56,.06); background: linear-gradient(140deg, rgba(255,253,248,.88), rgba(238,234,223,.56)); }
 .app-brandline { display: flex; align-items: center; gap: 13px; color: #25262a; font-size: 20px; letter-spacing: -.03em; }
 .app-brandline img { border-radius: 13px; box-shadow: 0 10px 25px rgba(4,116,241,.25); }
-.toolbar-buttons { display: flex; align-items: center; gap: 17px; color: #646872; font-size: 20px; }
-.fake-search { position: relative; margin: 0 24px; padding: 15px 17px 15px 48px; border: 1px solid rgba(28,61,103,.08); border-radius: 16px; color: #818792; background: rgba(255,255,255,.72); font-size: 14px; }
+.toolbar-buttons { display: flex; align-items: center; gap: 9px; color: #343438; font-size: 16px; }
+.toolbar-buttons span { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid rgba(117,99,61,.12); border-radius: 11px; background: rgba(255,253,247,.86); box-shadow: 0 5px 12px rgba(42,38,29,.06); }
+.fake-search { position: relative; margin: 15px 24px 0; padding: 15px 17px 15px 48px; border: 1px solid rgba(117,99,61,.12); border-radius: 16px; color: #77777c; background: rgba(255,253,247,.82); box-shadow: 0 5px 13px rgba(61,52,33,.045); font-size: 14px; }
 .fake-search span { position: absolute; left: 18px; top: 16px; width: 16px; height: 16px; border: 2px solid #8e9299; border-radius: 50%; }
 .fake-search span::after { content: ""; position: absolute; width: 7px; height: 2px; right: -5px; bottom: -2px; background: #8e9299; transform: rotate(45deg); border-radius: 2px; }
 .prompt-list { position: relative; padding: 20px 20px 55px; display: grid; gap: 11px; }
-.prompt-card { display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: center; min-height: 102px; padding: 16px; border: 1px solid rgba(156,119,35,.14); border-radius: 20px; color: #26272b; background: rgba(255,247,216,.88); box-shadow: 0 10px 20px rgba(91,70,28,.08); }
+.prompt-card { display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: center; min-height: 102px; padding: 16px; border: 1px solid rgba(156,119,35,.18); border-radius: 20px; color: #26272b; background: linear-gradient(145deg, rgba(255,253,247,.96), rgba(251,237,191,.9), rgba(246,240,222,.96)); box-shadow: 0 10px 20px rgba(91,70,28,.09); }
 .prompt-card.is-moving { border-color: rgba(35,144,255,.48); background: rgba(255,244,202,.97); box-shadow: 0 15px 30px rgba(38,83,138,.14), 0 0 0 2px rgba(22,135,255,.11); transform: translate(8px, -2px) rotate(-.6deg); }
 .drag-handle { display: grid; gap: 4px; opacity: .5; }
 .drag-handle i { display: block; width: 20px; height: 2px; border-radius: 2px; background: #9ca4ae; }
@@ -252,8 +253,8 @@ button, input { font: inherit; }
 .prompt-text p { overflow: hidden; margin: 4px 0 0; color: #777e88; font-size: 12px; line-height: 1.45; white-space: nowrap; text-overflow: ellipsis; }
 .prompt-text mark { color: #4c6ec8; background: transparent; }
 .row-actions { display: flex; gap: 14px; color: #7e8792; }
-.app-footer { position: absolute; inset: auto 0 0; display: flex; justify-content: space-between; padding: 14px 25px; border-top: 1px solid rgba(37,67,108,.08); color: #858b93; background: rgba(244,247,251,.92); font-size: 10px; }
-.variable-popover { position: absolute; z-index: 5; right: -4%; bottom: 0; width: 280px; padding: 18px; border: 1px solid rgba(255,255,255,.82); border-radius: 22px; background: rgba(247,247,250,.88); box-shadow: 0 26px 60px rgba(31,30,40,.25); backdrop-filter: blur(24px); color: #202025; }
+.app-footer { position: absolute; inset: auto 0 0; display: flex; justify-content: space-between; padding: 14px 25px; border-top: 1px solid rgba(114,95,56,.1); color: #7d7a74; background: rgba(247,244,235,.94); font-size: 10px; }
+.variable-popover { position: absolute; z-index: 5; right: -4%; bottom: 0; width: 280px; padding: 18px; border: 1px solid rgba(255,255,255,.88); border-radius: 22px; background: rgba(255,252,245,.93); box-shadow: 0 26px 60px rgba(31,30,40,.22); backdrop-filter: blur(24px); color: #202025; }
 .popover-head { display: flex; align-items: center; gap: 9px; margin-bottom: 15px; }
 .popover-head span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; color: white; background: var(--blue); font-size: 12px; }
 .popover-head strong { font-size: 14px; }
@@ -394,10 +395,6 @@ button, input { font: inherit; }
 .download-card .download-note { margin-top: 16px; font-size: 11px; }
 .download-card .download-checksum { margin-top: 7px; color: #87909d; font-size: 9px; }
 .download-checksum code { overflow-wrap: anywhere; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-.install-note { max-width: 690px; margin: 25px auto 0; padding: 0 20px 17px; border: 1px solid rgba(55,129,234,.22); border-radius: 17px; color: #526174; background: rgba(255,255,255,.54); box-shadow: inset 0 1px 0 rgba(255,255,255,.8); text-align: left; }
-.install-note summary { padding: 16px 0 4px; cursor: pointer; color: #33475f; font-size: 13px; font-weight: 750; }
-.install-note p { margin: 8px 0 0; font-size: 12px; line-height: 1.65; }
-
 .site-footer { padding: 68px 0 30px; }
 .footer-grid { display: flex; align-items: center; justify-content: space-between; gap: 30px; padding-bottom: 36px; border-bottom: 1px solid var(--line); }
 .footer-brand { display: flex; align-items: center; gap: 12px; }

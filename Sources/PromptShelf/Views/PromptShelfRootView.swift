@@ -135,38 +135,49 @@ struct PromptShelfRootView: View {
 
     private var background: some View {
         ZStack(alignment: .topLeading) {
-            Color(nsColor: .windowBackgroundColor)
+            if colorScheme == .light {
+                LinearGradient(
+                    colors: [ShelfColors.paper, ShelfColors.warmWhite, ShelfColors.sand.opacity(0.74)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
 
-            RadialGradient(
-                colors: [
-                    ShelfColors.azure.opacity(colorScheme == .dark ? 0.24 : 0.16),
-                    ShelfColors.indigo.opacity(colorScheme == .dark ? 0.09 : 0.055),
-                    .clear
-                ],
-                center: .topLeading,
-                startRadius: 0,
-                endRadius: 390
-            )
+                RadialGradient(
+                    colors: [ShelfColors.azure.opacity(0.085), .clear],
+                    center: .topLeading,
+                    startRadius: 0,
+                    endRadius: 360
+                )
 
-            RadialGradient(
-                colors: [
-                    ShelfColors.violet.opacity(colorScheme == .dark ? 0.15 : 0.09),
-                    .clear
-                ],
-                center: .bottomTrailing,
-                startRadius: 10,
-                endRadius: 330
-            )
+                RadialGradient(
+                    colors: [ShelfColors.violet.opacity(0.055), .clear],
+                    center: .bottomTrailing,
+                    startRadius: 10,
+                    endRadius: 320
+                )
+            } else {
+                Color(nsColor: .windowBackgroundColor)
 
-            LinearGradient(
-                colors: [
-                    .white.opacity(colorScheme == .dark ? 0.028 : 0.2),
-                    .clear,
-                    Color.black.opacity(colorScheme == .dark ? 0.1 : 0.015)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
+                RadialGradient(
+                    colors: [ShelfColors.azure.opacity(0.24), ShelfColors.indigo.opacity(0.09), .clear],
+                    center: .topLeading,
+                    startRadius: 0,
+                    endRadius: 390
+                )
+
+                RadialGradient(
+                    colors: [ShelfColors.violet.opacity(0.15), .clear],
+                    center: .bottomTrailing,
+                    startRadius: 10,
+                    endRadius: 330
+                )
+
+                LinearGradient(
+                    colors: [.white.opacity(0.028), .clear, Color.black.opacity(0.1)],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            }
         }
         .ignoresSafeArea()
     }

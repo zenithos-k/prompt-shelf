@@ -1,19 +1,22 @@
 import SwiftUI
-import UniformTypeIdentifiers
 
 struct PromptRow: View {
     @Environment(\.colorScheme) private var colorScheme
 
     let prompt: PromptSnippet
     @ObservedObject var store: PromptStore
+    let isReorderingEnabled: Bool
     let onCopy: () -> Void
     let onEdit: () -> Void
     let onDelete: () -> Void
 
     @State private var isHovering = false
     @State private var showsDeleteConfirmation = false
+    @State private var dragOriginIndex: Int?
+    @State private var dragTranslation: CGFloat = 0
 
     private let rowHeight: CGFloat = 80
+    private let rowSpacing: CGFloat = 9
 
     private var variableCount: Int {
         PromptTemplate.variables(in: prompt.body).count
@@ -31,14 +34,21 @@ struct PromptRow: View {
         HStack(spacing: 8) {
             Image(systemName: "line.3.horizontal")
                 .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(Color.secondary.opacity(isHovering ? 0.82 : 0.48))
+                .foregroundStyle(
+                    isDragging
+                        ? ShelfColors.azure
+                        : Color.secondary.opacity(isHovering ? 0.82 : 0.48)
+                )
                 .frame(width: 24, height: 44)
                 .background(
-                    isHovering ? Color.primary.opacity(0.055) : .clear,
+                    isDragging
+                        ? ShelfColors.azure.opacity(0.12)
+                        : (isHovering ? Color.primary.opacity(0.055) : .clear),
                     in: RoundedRectangle(cornerRadius: 7, style: .continuous)
                 )
                 .contentShape(Rectangle())
-                .help("Drag to reorder")
+                .gesture(reorderGesture, including: isReorderingEnabled ? .all : .none)
+                .help(isReorderingEnabled ? "Drag to reorder" : "Clear search to reorder")
 
             Button(action: onCopy) {
                 VStack(alignment: .leading, spacing: 5) {
@@ -106,7 +116,7 @@ struct PromptRow: View {
         .shelfCard(
             cornerRadius: 14,
             tint: colorScheme == .light ? ShelfColors.promptGold : ShelfColors.indigo,
-            tintOpacity: colorScheme == .light ? 0.115 : nil,
+            tintOpacity: colorScheme == .light ? 0.145 : nil,
             elevated: isHovering
         )
         .overlay(alignment: .leading) {
@@ -126,35 +136,54 @@ struct PromptRow: View {
                 .opacity(isHovering ? 1 : 0.34)
         }
         .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .onDrag {
-            store.beginDragging(id: prompt.id)
-            return NSItemProvider(object: prompt.id.uuidString as NSString)
-        } preview: {
-            HStack(spacing: 8) {
-                Image(systemName: "line.3.horizontal")
-                Text(prompt.title)
-                    .lineLimit(1)
-            }
-            .font(.system(size: 12.5, weight: .semibold, design: .rounded))
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 11))
-        }
-        .scaleEffect(isDragging ? 0.985 : (isHovering ? 1.004 : 1))
-        .opacity(isDragging ? 0.62 : 1)
+        .offset(y: isDragging ? dragTranslation : 0)
+        .scaleEffect(isDragging ? 1.018 : (isHovering ? 1.004 : 1))
+        .opacity(isDragging ? 0.88 : 1)
+        .shadow(
+            color: isDragging ? ShelfColors.azure.opacity(0.2) : .clear,
+            radius: isDragging ? 12 : 0,
+            y: isDragging ? 6 : 0
+        )
+        .zIndex(isDragging ? 2 : 0)
         .onHover { hovering in
             withAnimation(.easeOut(duration: 0.16)) {
                 isHovering = hovering
             }
         }
-        .onDrop(
-            of: [UTType.text],
-            delegate: PromptDropDelegate(target: prompt, rowHeight: rowHeight, store: store)
-        )
         .animation(.easeOut(duration: 0.12), value: isDragging)
         .alert(prompt.title, isPresented: $showsDeleteConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive, action: onDelete)
         }
+    }
+
+    private var reorderGesture: some Gesture {
+        DragGesture(minimumDistance: 3)
+            .onChanged { value in
+                guard isReorderingEnabled else { return }
+
+                if dragOriginIndex == nil {
+                    guard let index = store.index(of: prompt.id) else { return }
+                    dragOriginIndex = index
+                    store.beginDragging(id: prompt.id)
+                }
+                dragTranslation = value.translation.height
+            }
+            .onEnded { value in
+                guard let dragOriginIndex else {
+                    store.finishDragging()
+                    return
+                }
+
+                let stride = rowHeight + rowSpacing
+                let indexOffset = Int((value.translation.height / stride).rounded())
+
+                withAnimation(.interactiveSpring(response: 0.24, dampingFraction: 0.86)) {
+                    store.movePrompt(id: prompt.id, to: dragOriginIndex + indexOffset)
+                    dragTranslation = 0
+                    self.dragOriginIndex = nil
+                    store.finishDragging()
+                }
+            }
     }
 }
