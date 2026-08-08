@@ -46,15 +46,12 @@ struct LibraryView: View {
 
                 footer
             }
-            .allowsHitTesting(pendingDeletion == nil)
 
             if let pendingDeletion {
                 deleteConfirmation(for: pendingDeletion)
-                    .transition(.opacity.combined(with: .scale(scale: 0.98)))
                     .zIndex(20)
             }
         }
-        .animation(.easeOut(duration: 0.15), value: pendingDeletion?.id)
     }
 
     private var header: some View {
@@ -167,51 +164,106 @@ struct LibraryView: View {
     }
 
     private func deleteConfirmation(for prompt: PromptSnippet) -> some View {
-        ZStack {
+        let shape = RoundedRectangle(cornerRadius: 22, style: .continuous)
+
+        return ZStack {
             Color.black
-                .opacity(colorScheme == .dark ? 0.34 : 0.16)
+                .opacity(colorScheme == .dark ? 0.56 : 0.3)
                 .ignoresSafeArea()
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    pendingDeletion = nil
+                    dismissDeleteConfirmation()
                 }
 
-            VStack(spacing: 16) {
+            VStack(spacing: 0) {
                 Image(systemName: "trash")
-                    .font(.system(size: 21, weight: .medium))
+                    .font(.system(size: 22, weight: .semibold))
                     .foregroundStyle(.red)
-                    .frame(width: 44, height: 44)
-                    .background(Color.red.opacity(0.1), in: Circle())
+                    .frame(width: 48, height: 48)
+                    .background(Color.red.opacity(colorScheme == .dark ? 0.18 : 0.11), in: Circle())
 
-                Text("Are you sure you want to delete “\(prompt.title)”?")
-                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                Text("Delete Prompt?")
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                    .padding(.top, 16)
+
+                Text("“\(prompt.title)”")
+                    .font(.system(size: 14, weight: .semibold, design: .rounded))
                     .multilineTextAlignment(.center)
+                    .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 7)
+
+                Text("This action cannot be undone.")
+                    .font(.system(size: 11.5))
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 5)
 
                 HStack(spacing: 10) {
-                    Button("Cancel") {
-                        pendingDeletion = nil
+                    Button {
+                        dismissDeleteConfirmation()
+                    } label: {
+                        Text("Cancel")
+                            .frame(maxWidth: .infinity)
                     }
+                    .buttonStyle(.bordered)
                     .keyboardShortcut(.cancelAction)
 
-                    Button("Delete", role: .destructive) {
-                        pendingDeletion = nil
+                    Button(role: .destructive) {
+                        dismissDeleteConfirmation()
                         onDelete(prompt.id)
+                    } label: {
+                        Text("Delete")
+                            .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.red)
                     .keyboardShortcut(.defaultAction)
                 }
                 .controlSize(.large)
+                .padding(.top, 20)
             }
-            .padding(20)
-            .frame(width: 310)
-            .shelfCard(
-                cornerRadius: 18,
-                tint: .red,
-                tintOpacity: 0.035,
-                elevated: true
+            .padding(24)
+            .frame(width: 330)
+            .background(deleteDialogBackground, in: shape)
+            .overlay {
+                shape.strokeBorder(
+                    colorScheme == .dark
+                        ? Color.red.opacity(0.34)
+                        : Color.red.opacity(0.2),
+                    lineWidth: 1
+                )
+            }
+            .shadow(
+                color: Color.black.opacity(colorScheme == .dark ? 0.48 : 0.2),
+                radius: 28,
+                y: 14
             )
+            .contentShape(shape)
+            .onTapGesture {}
+        }
+    }
+
+    private var deleteDialogBackground: LinearGradient {
+        LinearGradient(
+            colors: colorScheme == .dark
+                ? [
+                    Color(red: 0.15, green: 0.14, blue: 0.16),
+                    Color(red: 0.095, green: 0.09, blue: 0.105)
+                ]
+                : [
+                    Color(red: 1.0, green: 0.992, blue: 0.975),
+                    Color(red: 0.975, green: 0.955, blue: 0.93)
+                ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+
+    private func dismissDeleteConfirmation() {
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
+            pendingDeletion = nil
         }
     }
 

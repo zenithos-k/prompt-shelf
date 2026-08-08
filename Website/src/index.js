@@ -3,7 +3,7 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === "/" && !url.searchParams.has("release")) {
-      url.searchParams.set("release", "1.4.2");
+      url.searchParams.set("release", "1.4.3");
 
       return new Response(null, {
         status: 302,
