@@ -2,6 +2,7 @@
 .build/
 .build-local/
 .build-universal/
+.build-dmg/
 .cache/
 .swiftpm/
 dist/

@@ -62,8 +62,8 @@ struct PromptEditorView: View {
             }
         }
         .alert(prompt?.title ?? title, isPresented: $showsDeleteConfirmation) {
-            Button("取消", role: .cancel) {}
-            Button("删除", role: .destructive) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive) {
                 onDelete?()
             }
         }
@@ -73,15 +73,15 @@ struct PromptEditorView: View {
         HStack(spacing: 10) {
             Button(action: onCancel) {
                 Image(systemName: "chevron.left")
-                    .accessibilityLabel("返回")
+                    .accessibilityLabel("Back")
             }
             .buttonStyle(ShelfIconButtonStyle())
             .keyboardShortcut(.cancelAction)
 
             VStack(alignment: .leading, spacing: 1) {
-                Text(prompt == nil ? "新建 Prompt" : "编辑 Prompt")
+                Text(prompt == nil ? "New Prompt" : "Edit Prompt")
                     .font(.system(size: 15, weight: .bold))
-                Text("{{变量}} 会被自动识别")
+                Text("{{variables}} are detected automatically")
                     .font(.system(size: 10.5))
                     .foregroundStyle(.secondary)
             }
@@ -94,8 +94,8 @@ struct PromptEditorView: View {
 
     private var titleSection: some View {
         VStack(alignment: .leading, spacing: 7) {
-            fieldLabel("名称")
-            TextField("例如：审查当前改动", text: $title)
+            fieldLabel("Name")
+            TextField("For example: Review current changes", text: $title)
                 .textFieldStyle(.plain)
                 .focused($focusedField, equals: .title)
                 .padding(.horizontal, 11)
@@ -107,9 +107,9 @@ struct PromptEditorView: View {
     private var bodySection: some View {
         VStack(alignment: .leading, spacing: 7) {
             HStack {
-                fieldLabel("Prompt 内容")
+                fieldLabel("Prompt content")
                 Spacer()
-                Text("\(bodyText.count) 字符")
+                Text("\(bodyText.count) characters")
                     .font(.system(size: 10.5))
                     .foregroundStyle(.tertiary)
             }
@@ -127,15 +127,15 @@ struct PromptEditorView: View {
     private var detectedVariablesSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                fieldLabel("自动识别的变量")
+                fieldLabel("Detected variables")
                 Spacer()
-                Text("\(variables.count) 个")
+                Text("\(variables.count)")
                     .font(.system(size: 10.5))
                     .foregroundStyle(.tertiary)
             }
 
             if variables.isEmpty {
-                Label("在内容中输入 {{变量名}}，复制时会自动出现填写界面。", systemImage: "sparkles")
+                Label("Type {{variable_name}} in the content. Prompt Shelf will ask for its value before copying.", systemImage: "sparkles")
                     .font(.system(size: 11.5))
                     .foregroundStyle(.secondary)
             } else {
@@ -149,15 +149,15 @@ struct PromptEditorView: View {
     private var actionBar: some View {
         HStack {
             if onDelete != nil {
-                Button("删除", role: .destructive) {
+                Button("Delete", role: .destructive) {
                     showsDeleteConfirmation = true
                 }
             }
 
             Spacer()
 
-            Button("取消", action: onCancel)
-            Button("保存") {
+            Button("Cancel", action: onCancel)
+            Button("Save") {
                 onSave(title, bodyText)
             }
             .buttonStyle(.borderedProminent)

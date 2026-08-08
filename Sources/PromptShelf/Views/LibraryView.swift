@@ -76,26 +76,26 @@ struct LibraryView: View {
 
             Button(action: onCycleAppearance) {
                 Image(systemName: colorScheme == .dark ? "moon.stars.fill" : "sun.max.fill")
-                    .accessibilityLabel("切换外观")
+                    .accessibilityLabel("Toggle appearance")
             }
             .buttonStyle(ShelfIconButtonStyle())
             .help(
-                "当前为\(colorScheme == .dark ? "深色" : "浅色")外观（设置：\(appearanceMode.displayName)）。点击切换"
+                "Currently using \(colorScheme == .dark ? "dark" : "light") appearance (setting: \(appearanceMode.displayName)). Click to toggle."
             )
 
             Button(action: onOpenSettings) {
                 Image(systemName: "gearshape")
-                    .accessibilityLabel("设置")
+                    .accessibilityLabel("Settings")
             }
             .buttonStyle(ShelfIconButtonStyle())
-            .help("设置")
+            .help("Settings")
 
             Button(action: onAdd) {
                 Image(systemName: "plus")
-                    .accessibilityLabel("新建 Prompt")
+                    .accessibilityLabel("New Prompt")
             }
             .buttonStyle(ShelfIconButtonStyle())
-            .help("新建 Prompt")
+            .help("New Prompt")
             .keyboardShortcut("n", modifiers: .command)
         }
         .padding(.horizontal, 14)
@@ -108,7 +108,7 @@ struct LibraryView: View {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.secondary)
 
-            TextField("搜索标题或内容", text: $searchText)
+            TextField("Search titles or content", text: $searchText)
                 .textFieldStyle(.plain)
                 .focused($searchIsFocused)
 
@@ -120,7 +120,7 @@ struct LibraryView: View {
                         .foregroundStyle(.tertiary)
                 }
                 .buttonStyle(.plain)
-                .help("清除搜索")
+                .help("Clear search")
             }
         }
         .padding(.horizontal, 12)
@@ -166,9 +166,9 @@ struct LibraryView: View {
             Image(systemName: normalizedQuery.isEmpty ? "text.quote" : "magnifyingglass")
                 .font(.system(size: 28, weight: .light))
                 .foregroundStyle(.tertiary)
-            Text(normalizedQuery.isEmpty ? "还没有 Prompt" : "没有匹配结果")
+            Text(normalizedQuery.isEmpty ? "No prompts yet" : "No matches")
                 .font(.headline)
-            Text(normalizedQuery.isEmpty ? "点击右上角的 + 创建第一条" : "试试其他关键词")
+            Text(normalizedQuery.isEmpty ? "Click + in the top-right corner to create one" : "Try a different search")
                 .font(.caption)
                 .foregroundStyle(.secondary)
             Spacer()
@@ -179,9 +179,9 @@ struct LibraryView: View {
     private var footer: some View {
         HStack(spacing: 6) {
             Image(systemName: "line.3.horizontal")
-            Text("拖动卡片调整顺序")
+            Text("Drag cards to reorder")
             Spacer()
-            Text("点击内容即可复制")
+            Text("Click a prompt to copy")
         }
         .font(.system(size: 10.5))
         .foregroundStyle(.tertiary)

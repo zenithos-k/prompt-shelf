@@ -36,7 +36,7 @@ struct PromptRow: View {
                     in: RoundedRectangle(cornerRadius: 7, style: .continuous)
                 )
                 .contentShape(Rectangle())
-                .help("拖动调整顺序")
+                .help("Drag to reorder")
 
             Button(action: onCopy) {
                 VStack(alignment: .leading, spacing: 5) {
@@ -71,7 +71,7 @@ struct PromptRow: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .help(variableCount > 0 ? "填写变量后复制" : "复制 Prompt")
+            .help(variableCount > 0 ? "Fill variables and copy" : "Copy prompt")
 
             HStack(spacing: 2) {
                 Button(action: onEdit) {
@@ -84,7 +84,7 @@ struct PromptRow: View {
                         )
                 }
                 .buttonStyle(.plain)
-                .help("编辑")
+                .help("Edit")
 
                 Button(role: .destructive) {
                     showsDeleteConfirmation = true
@@ -95,7 +95,7 @@ struct PromptRow: View {
                         .background(Color.red.opacity(isHovering ? 0.075 : 0), in: Circle())
                 }
                 .buttonStyle(.plain)
-                .help("删除")
+                .help("Delete")
             }
             .opacity(isHovering ? 1 : 0.62)
         }
@@ -150,8 +150,8 @@ struct PromptRow: View {
         )
         .animation(.easeOut(duration: 0.12), value: isDragging)
         .alert(prompt.title, isPresented: $showsDeleteConfirmation) {
-            Button("取消", role: .cancel) {}
-            Button("删除", role: .destructive, action: onDelete)
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive, action: onDelete)
         }
     }
 }

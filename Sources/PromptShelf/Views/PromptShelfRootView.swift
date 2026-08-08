@@ -49,12 +49,12 @@ struct PromptShelfRootView: View {
             WindowVisibilityObserver(onHidden: resetForNextPresentation)
                 .frame(width: 0, height: 0)
         }
-        .alert("无法保存 Prompt", isPresented: storeErrorBinding) {
-            Button("好", role: .cancel) {
+        .alert("Unable to Save Prompt", isPresented: storeErrorBinding) {
+            Button("OK", role: .cancel) {
                 store.clearError()
             }
         } message: {
-            Text(store.lastError ?? "未知错误")
+            Text(store.lastError ?? "Unknown error")
         }
         .onDisappear {
             resetForNextPresentation()
@@ -83,7 +83,7 @@ struct PromptShelfRootView: View {
                 onEdit: { route = .editor($0) },
                 onDelete: { id in
                     store.delete(id: id)
-                    showToast("已删除")
+                    showToast("Deleted")
                 },
                 onSelect: selectPrompt
             )
@@ -100,13 +100,13 @@ struct PromptShelfRootView: View {
                         store.add(title: title, body: body)
                     }
                     route = .library
-                    showToast("已保存")
+                    showToast("Saved")
                 },
                 onDelete: promptID.map { id in
                     {
                         store.delete(id: id)
                         route = .library
-                        showToast("已删除")
+                        showToast("Deleted")
                     }
                 }
             )
@@ -176,8 +176,8 @@ struct PromptShelfRootView: View {
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 28))
                 .foregroundStyle(.secondary)
-            Text("这个 Prompt 已不存在")
-            Button("返回") { route = .library }
+            Text("This prompt no longer exists")
+            Button("Back") { route = .library }
                 .buttonStyle(.borderedProminent)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -202,11 +202,11 @@ struct PromptShelfRootView: View {
 
     private func copyToClipboard(_ value: String) {
         guard ClipboardService.copy(value) else {
-            store.lastError = "无法写入系统剪贴板。"
+            store.lastError = "Unable to write to the clipboard."
             return
         }
 
-        showToast("已复制到剪贴板")
+        showToast("Copied to Clipboard")
         if closeAfterCopy {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
                 MenuBarWindowController.dismiss()

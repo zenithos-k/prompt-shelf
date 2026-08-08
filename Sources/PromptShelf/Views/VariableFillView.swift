@@ -58,7 +58,7 @@ struct VariableFillView: View {
         HStack(spacing: 10) {
             Button(action: onCancel) {
                 Image(systemName: "chevron.left")
-                    .accessibilityLabel("返回")
+                    .accessibilityLabel("Back")
             }
             .buttonStyle(ShelfIconButtonStyle())
             .keyboardShortcut(.cancelAction)
@@ -67,7 +67,7 @@ struct VariableFillView: View {
                 Text(prompt.title)
                     .font(.system(size: 15, weight: .bold))
                     .lineLimit(1)
-                Text("填写 \(variables.count) 个变量后复制")
+                Text("Fill \(variables.count) variable\(variables.count == 1 ? "" : "s") before copying")
                     .font(.system(size: 10.5))
                     .foregroundStyle(.secondary)
             }
@@ -79,7 +79,7 @@ struct VariableFillView: View {
 
     private var fieldsSection: some View {
         VStack(alignment: .leading, spacing: 11) {
-            Label("变量", systemImage: "curlybraces")
+            Label("Variables", systemImage: "curlybraces")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(.secondary)
 
@@ -88,7 +88,7 @@ struct VariableFillView: View {
                     Text(variable)
                         .font(.system(size: 11.5, weight: .medium))
 
-                    TextField("输入 \(variable)", text: binding(for: variable))
+                    TextField("Enter \(variable)", text: binding(for: variable))
                         .textFieldStyle(.plain)
                         .focused($focusedVariable, equals: variable)
                         .padding(.horizontal, 11)
@@ -102,12 +102,12 @@ struct VariableFillView: View {
     private var previewSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Label("实时预览", systemImage: "eye")
+                Label("Live Preview", systemImage: "eye")
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(.secondary)
                 Spacer()
                 if !missingVariables.isEmpty {
-                    Text("还需填写 \(missingVariables.count) 项")
+                    Text("\(missingVariables.count) remaining")
                         .font(.system(size: 10.5))
                         .foregroundStyle(.orange)
                 }
@@ -124,12 +124,12 @@ struct VariableFillView: View {
 
     private var actionBar: some View {
         HStack {
-            Text("未填写的变量不会被替换")
+            Text("Missing variables are left unchanged")
                 .font(.system(size: 10.5))
                 .foregroundStyle(.tertiary)
             Spacer()
-            Button("取消", action: onCancel)
-            Button("复制") {
+            Button("Cancel", action: onCancel)
+            Button("Copy") {
                 onCopy(renderedPrompt)
             }
             .buttonStyle(.borderedProminent)

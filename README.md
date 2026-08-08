@@ -1,69 +1,174 @@
 # Prompt Shelf
 
-原生 macOS 菜单栏 Prompt 管理器，用来保存、搜索、编辑、排序和复制常用 Prompt。
+A native macOS menu bar prompt manager built with Swift and SwiftUI. Prompt Shelf keeps reusable prompts one click away, supports drag-and-drop ordering, and turns `{{variables}}` into a fill-in form automatically.
 
-- 官网：[prompts.matrdreams.com](https://prompts.matrdreams.com)
-- 下载：[Prompt Shelf 1.2.0 DMG](https://prompts.matrdreams.com/downloads/Prompt-Shelf-1.2.0.dmg)
+[Website](https://prompts.matrdreams.com) · [Download Prompt Shelf 1.3.0](https://prompts.matrdreams.com/downloads/Prompt-Shelf-1.3.0.dmg)
 
-## 已实现功能
+> Prompt Shelf is source-available and currently distributed as a free, non-notarized build. See [Distribution status](#distribution-status) before sharing it with other users.
 
-- 菜单栏常驻窗口；不显示多余的 Dock 图标
-- 新建、编辑、二次确认删除、搜索和一键复制
-- 拖动整张卡片（或左侧手柄）调整任意 Prompt 的顺序
-- 自动识别内容中的 `{{变量}}`，复制前生成填写和实时预览界面
-- 自动跟随系统、浅色、深色三种外观，并提供主界面快捷切换
-- 独立设计的蓝紫玻璃应用图标
-- 本地 JSON 原子存储、导入、导出、登录时启动、复制后关闭
+## Why Prompt Shelf
 
-## 环境要求
+Prompt libraries are often buried in notes, text expanders, or previous chat sessions. Prompt Shelf is intentionally narrower: it provides fast access from the macOS menu bar without accounts, sync services, browser runtimes, or a persistent Dock icon.
 
-- 运行：macOS 13 或更新版本
-- 构建：Swift 6 / Xcode 16 或更新版本
-- 使用 macOS 26 SDK 构建时启用 Liquid Glass；旧 SDK 或旧系统自动使用原生材质
+Core advantages:
 
-## 开发
+- **Native interaction:** `MenuBarExtra`, SwiftUI controls, system materials, keyboard shortcuts, and macOS appearance support.
+- **Deterministic ordering:** drag any card or its handle; array order is persisted and restored exactly.
+- **Zero-configuration templates:** any unique token matching `{{variable_name}}` becomes a field before copy.
+- **Local-first data:** prompts are stored in a readable, versioned JSON document on the current Mac.
+- **Small runtime surface:** no Electron, embedded web view, third-party SDK, analytics, or network request.
+- **Universal distribution:** one application binary supports both Apple Silicon and Intel Macs.
+
+## Features
+
+- Create, edit, search, copy, and delete prompts
+- Drag-and-drop ordering across the complete prompt list
+- Automatic `{{variable}}` detection, live rendering, and validation
+- System, light, and dark appearance modes
+- Optional close-after-copy behavior
+- Optional launch at login
+- JSON import and export with order preservation
+- Atomic background persistence with coalesced writes
+- Confirmation before destructive actions
+- Menu bar presentation without a Dock icon
+
+## Architecture
+
+```text
+Sources/PromptShelf/
+├── Models/
+│   ├── PromptSnippet.swift         Prompt identity and content
+│   └── PromptTemplate.swift        Variable parsing and rendering
+├── Persistence/
+│   ├── PromptRepository.swift      Versioned JSON encoding and atomic writes
+│   └── PromptPersistenceCoordinator.swift
+├── Services/
+│   ├── AppPreferences.swift        Appearance and behavior preferences
+│   ├── ClipboardService.swift
+│   └── LaunchAtLoginController.swift
+├── Store/
+│   └── PromptStore.swift           Application state and ordering operations
+├── Views/
+│   ├── LibraryView.swift
+│   ├── PromptRow.swift
+│   ├── PromptDropDelegate.swift
+│   ├── PromptEditorView.swift
+│   ├── VariableFillView.swift
+│   └── SettingsView.swift
+└── PromptShelfApp.swift            Menu bar scene and lifecycle
+```
+
+The UI observes a single `PromptStore`. Mutations update in-memory ordering immediately, while `PromptPersistenceCoordinator` coalesces consecutive writes on a serial utility queue. A final synchronous flush runs before termination or menu presentation teardown.
+
+## Template syntax
+
+Variables use double braces:
+
+```text
+Explain {{file}}, focusing on {{topic}}.
+Compare {{topic}} with the previous implementation.
+```
+
+The parser trims surrounding whitespace, preserves first-seen order, and deduplicates repeated variable names. In this example, the copy form contains two fields: `file` and `topic`.
+
+Prompt rendering is deterministic: values replace every matching occurrence, while missing values remain visible as their original tokens.
+
+## Persistence format
+
+The default database location is:
+
+```text
+~/Library/Application Support/PromptShelf/prompts.json
+```
+
+The JSON root includes an explicit schema version. Prompt array order is the display order, so no separate rank index needs to be maintained. Writes use an atomic replacement strategy to avoid partially written documents.
+
+Prompt Shelf does not transmit this file or its contents. Import and export are explicit user actions through native file panels.
+
+## Requirements
+
+### Run
+
+- macOS 13.0 or later
+- Apple Silicon or Intel Mac
+
+### Build
+
+- Swift 6
+- macOS SDK and Command Line Tools capable of building SwiftUI applications
+- Xcode 16 or later recommended
+
+When built with the macOS 26 SDK, Prompt Shelf uses Liquid Glass where available. Compile-time and runtime availability checks preserve compatibility with older supported systems.
+
+## Development
+
+Build and run the Swift package:
 
 ```bash
 swift build
-swift test
 swift run PromptShelf
 ```
 
-开发时可以直接运行 Swift Package。生成普通菜单栏 `.app`：
+Run the test suite:
+
+```bash
+swift test
+```
+
+Tests cover variable parsing and rendering, repository compatibility, persistence behavior, and store ordering.
+
+Build a standard application bundle:
 
 ```bash
 ./Scripts/build-app.sh
 open "dist/Prompt Shelf.app"
 ```
 
-生成同时支持 Apple Silicon 和 Intel 的通用应用：
+Build the Universal application bundle:
 
 ```bash
 ./Scripts/build-universal-app.sh
+lipo -info "dist/Prompt Shelf.app/Contents/MacOS/PromptShelf"
 ```
 
-## 数据
+Create the styled release DMG:
 
-Prompt 默认保存在：
-
-```text
-~/Library/Application Support/PromptShelf/prompts.json
+```bash
+./Scripts/build-dmg.sh
 ```
 
-JSON 文档带有显式 schema 版本。数组顺序就是显示顺序，因此拖动结果会在重启后保留。连续拖动时写盘会合并，最终写入采用原子替换。
+## Performance and compatibility
 
-## 兼容性与性能
+- `LazyVStack` prevents the library from eagerly instantiating every prompt row.
+- Variable extraction reuses a single compiled regular expression.
+- Persistence runs away from the main actor on a serial utility queue.
+- Consecutive reorder writes are coalesced; the final state is flushed explicitly.
+- The application binary contains native `arm64` and `x86_64` slices.
+- The application has no runtime package dependencies or network client.
 
-- 使用 `MenuBarExtra` 和原生 SwiftUI 控件，不包含浏览器运行时。
-- 列表使用 `LazyVStack`，不会一次创建全部行。
-- 变量识别复用单个正则表达式实例。
-- 持久化在串行 utility 队列执行，并在窗口关闭前同步刷新。
-- Liquid Glass 同时受编译期 SDK 判断和 `#available(macOS 26, *)` 保护。
-- 应用仅使用本地数据，不发起网络请求。
+## Privacy and security
 
-## 官网
+Prompt Shelf requires no account and includes no telemetry or analytics. Application data stays in the local JSON document described above.
 
-`Website/site` 是无框架、无外部依赖的静态单页，使用 Cloudflare Workers Static Assets 部署。下载包不会提交到 Git 仓库；发布前将 DMG 放进 `Website/site/downloads/`，然后执行：
+Before publishing a release, verify at minimum:
+
+```bash
+codesign --verify --deep --strict --verbose=2 "dist/Prompt Shelf.app"
+hdiutil verify "Website/site/downloads/Prompt-Shelf-1.3.0.dmg"
+shasum -a 256 "Website/site/downloads/Prompt-Shelf-1.3.0.dmg"
+```
+
+## Distribution status
+
+The repository does not currently have access to an Apple Developer ID signing identity. Local release builds are therefore ad-hoc signed and cannot be notarized. macOS Gatekeeper may block the first launch after download; users must explicitly approve it in **System Settings → Privacy & Security → Open Anyway**.
+
+For frictionless public distribution, sign the app with a `Developer ID Application` certificate, submit it with `notarytool`, staple the ticket, and rebuild the DMG. The release script is structured so proper signing can replace ad-hoc signing once a certificate is available.
+
+## Website
+
+`Website/site` contains the dependency-free landing page. Cloudflare Workers Static Assets serves the site and DMG from `prompts.matrdreams.com`.
+
+The DMG is intentionally excluded from Git history. Place the release artifact in `Website/site/downloads/`, then deploy:
 
 ```bash
 cd Website
