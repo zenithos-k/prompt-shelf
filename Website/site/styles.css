@@ -292,13 +292,11 @@ button, input { font: inherit; }
 .section-heading > p { max-width: 390px; margin: 0 0 5px; color: #6a676a; font-size: 16px; }
 .section-heading.compact { margin-bottom: 45px; }
 .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 17px; align-items: stretch; }
-.feature-card { position: relative; min-height: 390px; overflow: hidden; padding: 32px; border: 1px solid rgba(23,23,25,.09); border-radius: 28px; background: rgba(255,255,255,.58); box-shadow: 0 12px 25px rgba(37,34,31,.045); }
-.feature-card-wide { display: block; }
+.feature-card { position: relative; min-height: 390px; overflow: hidden; padding: 72px 32px 32px; border: 1px solid rgba(23,23,25,.09); border-radius: 28px; background: rgba(255,255,255,.58); box-shadow: 0 12px 25px rgba(37,34,31,.045); }
+.feature-card-wide { display: block; padding-top: 64px; }
 .feature-card-tall { background: linear-gradient(145deg, #fff, #f6f5f2); }
-.feature-number { display: block; margin-bottom: 60px; color: #9b9898; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
 .feature-card h3 { margin: 0 0 11px; font-size: 26px; line-height: 1.12; letter-spacing: -.035em; }
 .feature-card p { max-width: 330px; margin: 0; color: #716e70; font-size: 14px; }
-.feature-card-wide .feature-number { margin-bottom: 35px; }
 .mini-stack { position: absolute; left: 31px; right: 31px; bottom: 25px; min-height: 150px; }
 .mini-row { position: absolute; right: 0; display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 13px; border: 1px solid rgba(23,23,25,.1); border-radius: 13px; background: white; box-shadow: 0 12px 24px rgba(24,23,27,.08); color: #333136; font-size: 11px; font-weight: 700; }
 .mini-row b { color: #a6a3a7; font-weight: 500; letter-spacing: 2px; }
@@ -312,7 +310,7 @@ button, input { font: inherit; }
 .search-demo i { width: 12px; height: 12px; border: 2px solid #7f7b80; border-radius: 50%; }
 .search-demo kbd { margin-left: auto; padding: 3px 6px; border: 1px solid #dedbdd; border-radius: 5px; background: #f4f2f3; color: #898589; font-size: 9px; }
 .dark-card { color: var(--ink); background: linear-gradient(145deg, #edf6ff, #f5f1ff); }
-.dark-card p, .dark-card .feature-number { color: #716e78; }
+.dark-card p { color: #716e78; }
 .copy-rings { position: relative; height: 138px; margin-top: -22px; }
 .copy-rings i { position: absolute; left: 50%; top: 50%; border: 1px solid rgba(87,162,255,.28); border-radius: 50%; transform: translate(-50%,-50%); }
 .copy-rings i:nth-child(1) { width: 125px; height: 125px; }
@@ -476,9 +474,8 @@ button, input { font: inherit; }
   .terminal-body p span { width: 66px; }
   .manifesto h2, .section-heading h2, .variable-copy h2, .privacy-copy h2, .download-card h2 { font-size: 40px; }
   .manifesto p { font-size: 16px; }
-  .feature-card { min-height: 360px; padding: 26px; }
-  .feature-card-wide { min-height: 430px; }
-  .feature-card-wide .feature-number { margin-bottom: 45px; }
+  .feature-card { min-height: 360px; padding: 56px 26px 26px; }
+  .feature-card-wide { min-height: 430px; padding-top: 54px; }
   .mini-stack { margin-top: 25px; }
   .variable-demo { min-height: 480px; }
   .code-editor { width: 100%; }
