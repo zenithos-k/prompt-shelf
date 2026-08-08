@@ -2,7 +2,7 @@
 
 A native macOS menu bar prompt manager built with Swift and SwiftUI. Prompt Shelf keeps reusable prompts one click away, supports drag-and-drop ordering, and turns `{{variables}}` into a fill-in form automatically.
 
-[Website](https://prompts.matrdreams.com) · [Download Prompt Shelf 1.4.3](https://prompts.matrdreams.com/downloads/Prompt-Shelf-1.4.3.dmg?v=07f27105)
+[Website](https://prompts.matrdreams.com) · [Download Prompt Shelf 1.4.3](https://prompts.matrdreams.com/downloads/Prompt-Shelf-1.4.3.dmg?v=07f27105-r2)
 
 > Prompt Shelf is source-available and currently distributed as a free, non-notarized build. See [Distribution status](#distribution-status) before sharing it with other users.
 
@@ -143,8 +143,8 @@ Before publishing a release, verify at minimum:
 
 ```bash
 codesign --verify --deep --strict --verbose=2 "dist/Prompt Shelf.app"
-hdiutil verify "Website/site/downloads/Prompt-Shelf-1.4.3.dmg"
-shasum -a 256 "Website/site/downloads/Prompt-Shelf-1.4.3.dmg"
+hdiutil verify "dist/releases/Prompt-Shelf-1.4.3.dmg"
+shasum -a 256 "dist/releases/Prompt-Shelf-1.4.3.dmg"
 ```
 
 ## Distribution status
@@ -155,11 +155,19 @@ For frictionless public distribution, sign the app with a `Developer ID Applicat
 
 ## Website
 
-`Website/site` contains the dependency-free landing page. Cloudflare Workers Static Assets serves the site and DMG from `prompts.matrdreams.com`.
+`Website/site` contains the dependency-free landing page. Cloudflare Workers Static Assets serves the site from `prompts.matrdreams.com`, while versioned DMGs live in the private `prompt-shelf-releases` R2 bucket. The Worker streams downloads through the existing `/downloads/Prompt-Shelf-<version>.dmg` URLs and supports HTTP range requests.
 
-The DMG is intentionally excluded from Git history. Place the release artifact in `Website/site/downloads/`, then deploy:
+DMGs are intentionally excluded from Git history. Build and upload the version in `Info.plist` with:
 
 ```bash
-cd Website
-wrangler deploy
+./Scripts/build-dmg.sh
+./Scripts/publish-release.sh
 ```
+
+After updating the landing-page download links for a new release, deploy the Worker and static assets separately:
+
+```bash
+cd Website && wrangler deploy
+```
+
+The Worker publishes the SHA-256 checksum as response metadata for known releases. Add each new checksum to `Website/src/index.js` before deploying the new download link.
