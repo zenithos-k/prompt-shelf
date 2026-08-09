@@ -1,14 +1,8 @@
-const currentRelease = "1.4.3.2";
+const currentRelease = "1.4.4.1";
 const releasePathPattern = /^\/downloads\/(Prompt-Shelf-(\d+\.\d+\.\d+)\.dmg)$/;
 const releaseCacheControl = "public, max-age=31536000, immutable";
 const releaseSha256 = Object.freeze({
-  "1.2.0": "a2ae445ebcf4b13a22f34dac263ec471631b773c255b8d5adb2237309c56fbcb",
-  "1.3.0": "986abe6d719b4e3c4821ef0ebe73b5b1ffd6d1f0933f6975766a7580249814a7",
-  "1.3.1": "ddb08b7980744152ab9f5ea9d3cf13e713aa52ed971f5c323236436dbca2e388",
-  "1.4.0": "a64e43c258124197e3ad1b48228646e829433fca3a5d8be3a4bb9e3699601da2",
-  "1.4.1": "5c8baf88d0083de2e03f1e538dc1cf48956383cde92c50f70c5088708759428a",
-  "1.4.2": "6ec34f09587a9434e273a5b0dafd90363c8064f4e5bf7ffd73016d6f37e9cf0a",
-  "1.4.3": "07f271054492a75c537c04822f51673fb0837f635b2ed70ad5880fe8d02d1c6c",
+  "1.4.4": "29de8342d05e86af749d871576b72ffe5a6cb99b52617ce3440dae4129fd7c76",
 });
 
 function releaseHeaders(object, filename, version) {
